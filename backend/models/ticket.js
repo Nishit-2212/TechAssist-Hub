@@ -1,4 +1,5 @@
 import mongoose from "mongoose"
+import User from "./user.js"
 
 
 const ticketSchema = new mongoose.Schema({
@@ -31,4 +32,4 @@ const ticketSchema = new mongoose.Schema({
 
 
 
-export default mongoose.model("Ticket",userSchema)
+export default mongoose.model("Ticket",ticketSchema)

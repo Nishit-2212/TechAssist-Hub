@@ -3,7 +3,7 @@ import { getUser, login, logout, signup, updateUser } from "../controllers/user.
 import { authenticate } from "../middleware/auth.js";
 
 
-const router = express.router();
+const router = express.Router();
 
 
 router.post("/update-user",authenticate, updateUser);

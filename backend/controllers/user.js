@@ -1,7 +1,7 @@
 import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
 import User from "../models/user.js"
-import { Inngest } from "../inngest/client.js"
+import { inngest } from "../inngest/client.js"
 
 
 export const signup = async (req,res) => {
@@ -9,7 +9,7 @@ export const signup = async (req,res) => {
     const {email, password, skills} =req.body
 
     try {
-        const hashed = bcrypt.hashed(password,10)
+        const hashed = await bcrypt.hash(password,10);
         const user = await User.create({email, password:hashed,skills});
 
         await inngest.send({
@@ -38,24 +38,30 @@ export const signup = async (req,res) => {
 
 export const login = async(req,res) => {
 
-    const {email, password} = req.body
+    console.log("Login request received");
+    const {email, password} = req.body;
 
     try{
 
-        const users = User.findOne({email});
+        const users = await User.findOne({email});
+        // console.log("User found:", users);
         if(!users) {
             res.status(401).json({error : `User with this ${email} not found`});
         }
 
-        const isMatch = await bcrypt.compare(password,users.password);
+        console.log("Password matched1");
+        const isMatch = await bcrypt.compare(password, users.password);
+        console.log("Password matched2");
 
         if(!isMatch) {
             res.status(401).json({error:"Password is not match"});
 
         }
 
+        console.log("Password matched");
+
         const token = jwt.sign(
-            {_id:user._id, role:user.role},
+            {_id:User._id, role:User.role},
             process.env.JWT_SECRET
         );
 
